@@ -54,7 +54,7 @@ function renderToys(toy) {
   
   toyCollection.appendChild(div)
   div.append(h2)
-  div.append(image)
+  div.append(img)
   div.append(p)
   div.append(button)
 }
@@ -77,9 +77,28 @@ getToys('http://localhost:3000/toys')
 
 //Then I need to:
 // [x] select the form from the DOM and the form input areas
-// [] add an event listener to the *form* for the submit that posts the data to the server with the values of the toys name and url entered, plus a default of 0 likes and a like button
-// [] chain a .then to the POST such that it passes in the renderToys callback function to render the new card to the DOM
+// [x] add an event listener to the *form* for the submit that posts the data to the server with the values of the toys name and url entered, plus a default of 0 likes
+// [x] chain a .then to the POST such that it passes in the renderToys callback function to render the new card to the DOM
 
-const form = document.querySelector('#add-toy-form')
-const formNameInput = document.getElementsByName('name')
-const formImageInput = document.getElementsByName('image')
+let form = document.querySelector('.add-toy-form')
+const formNameInput = document.querySelector('input[name="name"]')
+const formImageInput = document.querySelector('input[name="image"]')
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const toy = {
+    name: formNameInput.value,
+    image: formImageInput.value,
+    likes: 0
+  }
+  fetch('http://localhost:3000/toys', {
+    method: "POST",
+    headers:  {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(toy)
+
+  })
+  .then(res => res.json())
+  .then(renderToys)
+})
